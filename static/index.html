@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Our Cloud</title>
+</head>
+<body>
+  <h1>📁 Our Cloud</h1>
+
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <button type="submit">Upload</button>
+  </form>
+
+  <ul id="fileList"></ul>
+
+  <script>
+    document.getElementById("uploadForm").onsubmit = async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      await fetch('/upload', { method: 'POST', body: formData });
+      alert('Uploaded!');
+      loadFiles();
+    };
+
+    async function loadFiles() {
+      const res = await fetch('/files');
+      const files = await res.json();
+      const list = document.getElementById("fileList");
+      list.innerHTML = "";
+      files.forEach(f => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="/download?name=${f}">${f}</a>`;
+        list.appendChild(li);
+      });
+    }
+
+    loadFiles();
+  </script>
+</body>
+</html>
